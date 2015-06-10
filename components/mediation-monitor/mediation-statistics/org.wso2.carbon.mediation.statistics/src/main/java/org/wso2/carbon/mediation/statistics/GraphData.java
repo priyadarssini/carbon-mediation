@@ -24,6 +24,8 @@ public class GraphData {
     private String proxyServiceData;
     private String endPointData;
 
+    private String inboundData;
+
     public String getServerData() {
         return serverData;
     }
@@ -54,5 +56,13 @@ public class GraphData {
 
     public void setEndPointData(String endPointData) {
         this.endPointData = endPointData;
+    }
+
+    public String getInboundData() {
+        return inboundData;
+    }
+
+    public void setInboundData(String inboundData) {
+        this.inboundData = inboundData;
     }
 }

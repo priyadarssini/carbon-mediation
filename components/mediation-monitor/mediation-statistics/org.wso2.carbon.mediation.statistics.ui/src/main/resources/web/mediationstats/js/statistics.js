@@ -22,6 +22,7 @@ var serverDataSet ;
 var proxyServiceDataSet ;
 var endPointDataSet ;
 var sequenceDataSet ;
+var inboundDataSet;
 
 var showGraphDivHome = false;
 var showGraphDivInterval = 0;
@@ -60,6 +61,7 @@ function drawGraphs() {
     drawProxyServiceGraph();
     drawEndPointGraph();
     drawSequencesGraph();
+    drawInboundGraph();
     resetGraphData();
 }
 function drawServerGraph() {
@@ -73,6 +75,9 @@ function drawEndPointGraph() {
 }
 function drawSequencesGraph() {
     draw(sequenceDataSet, "sequenceGraph");
+}
+function drawInboundGraph() {
+    draw(inboundDataSet, "inboundGraph");
 }
 function fillDataForGraph(valueStr) {
     var values = valueStr.split(";");
@@ -88,8 +93,9 @@ function resetGraphData() {
     proxyServiceDataSet = [];
     endPointDataSet = [];
     sequenceDataSet = [];
+    inboundDataSet = [];
 }
-function populateAllGraphs(serverStr, psStr, epStr, seqStr) {
+function populateAllGraphs(serverStr, psStr, epStr, seqStr,inboundStr) {
 
     if (serverStr != "") {
         serverDataSet = fillDataForGraph(serverStr);
@@ -102,6 +108,9 @@ function populateAllGraphs(serverStr, psStr, epStr, seqStr) {
     }
     if (seqStr != "") {
         sequenceDataSet = fillDataForGraph(seqStr);
+    }
+    if (inboundStr != "") {
+        inboundDataSet = fillDataForGraph(inboundStr);
     }
 }
 function isNumeric(sText) {

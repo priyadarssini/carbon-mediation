@@ -52,6 +52,11 @@ public class MediationStatisticsAdmin extends AbstractServiceBusAdmin {
                 getProperty(StatisticsConstants.STAT_PROPERTY)).getResourceNames(ComponentType.ENDPOINT);
     }
 
+    public String[] listInboundEndPoint() {
+        return ((MediationStatisticsStore) getConfigContext().
+                getProperty(StatisticsConstants.STAT_PROPERTY)).getResourceNames(ComponentType.INBOUND_ENDPOINT);
+    }
+
     public InOutStatisticsRecord getCategoryStatistics(int category) {
         ComponentType type = StatisticsUtil.getComponentType(category);
         return getCategoryStatistics(type);
@@ -87,6 +92,9 @@ public class MediationStatisticsAdmin extends AbstractServiceBusAdmin {
         Map<String, Integer> epData = ((MediationStatisticsStore) getConfigContext().
                 getProperty(StatisticsConstants.STAT_PROPERTY)).
                 getTotalCounts(ComponentType.ENDPOINT);
+        Map<String, Integer> inboundData = ((MediationStatisticsStore) getConfigContext().
+                getProperty(StatisticsConstants.STAT_PROPERTY)).
+                getTotalCounts(ComponentType.INBOUND_ENDPOINT);
         Map<String, Integer> sequenceData = ((MediationStatisticsStore) getConfigContext().
                 getProperty(StatisticsConstants.STAT_PROPERTY)).
                 getTotalCounts(ComponentType.SEQUENCE);
@@ -94,6 +102,7 @@ public class MediationStatisticsAdmin extends AbstractServiceBusAdmin {
         StringBuffer serverDataStr = new StringBuffer();
         StringBuffer psDataStr = new StringBuffer();
         StringBuffer epDataStr = new StringBuffer();
+        StringBuffer inboundDataStr = new StringBuffer();
         StringBuffer sequenceDataStr = new StringBuffer();
 
         for (Map.Entry<String, Integer> entry : serverData.entrySet()) {
@@ -112,8 +121,13 @@ public class MediationStatisticsAdmin extends AbstractServiceBusAdmin {
             sequenceDataStr.append(entry.getKey() + "-[" + entry.getValue() + "]-," +
                     entry.getValue() + ";");
         }
+        for (Map.Entry<String, Integer> entry : inboundData.entrySet()) {
+            inboundDataStr.append(entry.getKey() + "-[" + entry.getValue() + "]-," +
+                    entry.getValue() + ";");
+        }
 
         graphData.setEndPointData(epDataStr.toString());
+        graphData.setInboundData(inboundDataStr.toString());
         graphData.setProxyServiceData(psDataStr.toString());
         graphData.setSequenceData(sequenceDataStr.toString());
         graphData.setServerData(serverDataStr.toString());
@@ -134,6 +148,12 @@ public class MediationStatisticsAdmin extends AbstractServiceBusAdmin {
     public InOutStatisticsRecord getServerStatistics() {
         List<StatisticsRecord> inRecords = new ArrayList<StatisticsRecord>();
         List<StatisticsRecord> outRecords = new ArrayList<StatisticsRecord>();
+
+        StatisticsRecord inboundInStats = getInboundStatistics(ComponentType.INBOUND_ENDPOINT.toString()).
+                getInRecord();
+        if (inboundInStats != null) {
+            inRecords.add(inboundInStats);
+        }
 
         StatisticsRecord proxyInStats = getCategoryStatistics(ComponentType.PROXYSERVICE).
                 getInRecord();
@@ -173,6 +193,18 @@ public class MediationStatisticsAdmin extends AbstractServiceBusAdmin {
         record.setOutRecord(((MediationStatisticsStore) getConfigContext().
                 getProperty(StatisticsConstants.STAT_PROPERTY)).
                 getRecordByResource(sequenceName, ComponentType.SEQUENCE, false));
+        return record;
+    }
+
+    public InOutStatisticsRecord getInboundStatistics(String inboundName) {
+        InOutStatisticsRecord record = new InOutStatisticsRecord();
+        record.setInRecord(((MediationStatisticsStore) getConfigContext().
+                getProperty(StatisticsConstants.STAT_PROPERTY)).
+                getRecordByResource(inboundName, ComponentType.INBOUND_ENDPOINT, true));
+        record.setOutRecord(((MediationStatisticsStore) getConfigContext().
+                getProperty(StatisticsConstants.STAT_PROPERTY)).
+                getRecordByResource(inboundName, ComponentType.INBOUND_ENDPOINT, false));
+        System.out.print("**********************************************");
         return record;
     }
 

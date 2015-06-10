@@ -28,6 +28,7 @@ public class StatisticsUtil {
     public static final String ENDPOINT_CATEGORY = "endpoint";
     public static final String PROXY_SERVICE_CATEGORY = "proxy-service";
     public static final String SEQUENCE_CATEGORY = "sequence";
+    public static final String INBOUND_CATEGORY = "inbound";
 
     public static final String IN_DIRECTION = "in";
     public static final String OUT_DIRECTION = "out";
@@ -51,6 +52,7 @@ public class StatisticsUtil {
             case StatisticsConstants.ENDPOINT_STATISTICS : return ComponentType.ENDPOINT;
             case StatisticsConstants.PROXY_SERVICE_STATISTICS: return ComponentType.PROXYSERVICE;
             case StatisticsConstants.SEQUENCE_STATISTICS: return ComponentType.SEQUENCE;
+            case StatisticsConstants.INBOUND_STATISTICS: return ComponentType.INBOUND_ENDPOINT;
             default: return null;
         }
     }
@@ -63,6 +65,8 @@ public class StatisticsUtil {
                 return PROXY_SERVICE_CATEGORY;
             case StatisticsConstants.SEQUENCE_STATISTICS:
                 return SEQUENCE_CATEGORY;
+            case StatisticsConstants.INBOUND_STATISTICS:
+                return INBOUND_CATEGORY;
             default:
                 handleException("Unknown category");
         }
@@ -89,6 +93,8 @@ public class StatisticsUtil {
             return StatisticsConstants.PROXY_SERVICE_STATISTICS;
         } else if (SEQUENCE_CATEGORY.equals(catetory)) {
             return StatisticsConstants.SEQUENCE_STATISTICS;
+        } else if (INBOUND_CATEGORY.equals(catetory)) {
+            return StatisticsConstants.INBOUND_STATISTICS;
         } else {
             handleException("Unknow category " + catetory);
         }

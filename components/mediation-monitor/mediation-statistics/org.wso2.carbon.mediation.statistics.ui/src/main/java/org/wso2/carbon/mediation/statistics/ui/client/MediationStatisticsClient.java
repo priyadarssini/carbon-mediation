@@ -166,6 +166,16 @@ public class MediationStatisticsClient {
         return null;
     }
 
+    public InOutStatisticsRecord getInboundEndPointStatistics(String name) throws AxisFault {
+        try {
+            return stub.getInboundStatistics(name);
+        } catch (Exception e) {
+            String msg = "Cannot get endpoint data. Backepnd service may be unvailable";
+            handleException(msg, e);
+        }
+        return null;
+    }
+
     public InOutStatisticsRecord getProxyServiceStatistics(String name) throws AxisFault {
         try {
             return stub.getProxyServiceStatistics(name);

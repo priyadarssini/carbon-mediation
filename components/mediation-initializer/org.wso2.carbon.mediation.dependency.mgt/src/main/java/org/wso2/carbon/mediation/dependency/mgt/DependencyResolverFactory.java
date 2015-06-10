@@ -29,7 +29,6 @@ import org.apache.synapse.mediators.eip.splitter.CloneMediator;
 import org.apache.synapse.mediators.eip.splitter.IterateMediator;
 import org.apache.synapse.mediators.bsf.ScriptMediator;
 import org.apache.synapse.mediators.spring.SpringMediator;
-import org.apache.synapse.mediators.throttle.ThrottleMediator;
 import org.apache.synapse.Mediator;
 
 import java.util.Map;
@@ -51,7 +50,6 @@ public class DependencyResolverFactory {
         resolversMap.put(SendMediator.class.getName(), new SendMediatorResolver());
         resolversMap.put(SequenceMediator.class.getName(), new SequenceMediatorResolver());
         resolversMap.put(SpringMediator.class.getName(), new SpringMediatorResolver());
-        resolversMap.put(ThrottleMediator.class.getName(), new ThrottleMediatorResolver());
         resolversMap.put(ValidateMediator.class.getName(), new ValidateMediatorResolver());
         resolversMap.put(XQueryMediator.class.getName(), new XQueryMediatorResolver());
         resolversMap.put(XSLTMediator.class.getName(), new XSLTMediatorResolver());

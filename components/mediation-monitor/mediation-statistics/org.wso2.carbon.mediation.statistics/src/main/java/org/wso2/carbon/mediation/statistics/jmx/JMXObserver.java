@@ -45,6 +45,7 @@ public class JMXObserver implements MediationStatisticsObserver {
         inDataStore.put(ComponentType.ENDPOINT, new HashMap<String, StatisticsView>());
         inDataStore.put(ComponentType.SEQUENCE, new HashMap<String, StatisticsView>());
         inDataStore.put(ComponentType.PROXYSERVICE, new HashMap<String, StatisticsView>());
+        inDataStore.put(ComponentType.INBOUND_ENDPOINT, new HashMap<String, StatisticsView>());
         inDataStore.put(ComponentType.ANY, new HashMap<String, StatisticsView>());
 
         outDataStore = new HashMap<ComponentType, Map<String, StatisticsView>>();
@@ -52,6 +53,7 @@ public class JMXObserver implements MediationStatisticsObserver {
         outDataStore.put(ComponentType.ENDPOINT, new HashMap<String, StatisticsView>());
         outDataStore.put(ComponentType.SEQUENCE, new HashMap<String, StatisticsView>());
         outDataStore.put(ComponentType.PROXYSERVICE, new HashMap<String, StatisticsView>());
+        outDataStore.put(ComponentType.INBOUND_ENDPOINT, new HashMap<String, StatisticsView>());
         outDataStore.put(ComponentType.ANY, new HashMap<String, StatisticsView>());
     }
 
@@ -131,7 +133,9 @@ public class JMXObserver implements MediationStatisticsObserver {
             return "ProxyService-Statistics";
         } else if (type == ComponentType.SEQUENCE) {
             return "Sequence-Statistics";
-        } else if (type == ComponentType.ANY) {
+        } else if (type == ComponentType.INBOUND_ENDPOINT) {
+            return "Inbound-Statistics";
+        }else if (type == ComponentType.ANY) {
             return "Any-Statistics";
         }
 

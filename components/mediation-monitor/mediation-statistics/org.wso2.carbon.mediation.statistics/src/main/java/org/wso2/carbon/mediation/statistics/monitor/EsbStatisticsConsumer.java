@@ -54,6 +54,7 @@ public class EsbStatisticsConsumer implements MediationStatisticsObserver {
     private static final Log log = LogFactory.getLog(EsbStatisticsConsumer.class);
 
     private static final String SEQUENCE_MONITOR = "Sequence-Monitor";
+    private static final String INBOUND_MONITOR = "Inbound-Monitor";
     private static final String ENDPOINT_MONITOR = "Endpoint-Monitor";
     private static final String ENDPOINT_OPERATION_MONITOR = "Endpoint-Operation-Monitor";
     private static final String MEMORY_MONITOR = "Memory-Monitor";
@@ -66,6 +67,7 @@ public class EsbStatisticsConsumer implements MediationStatisticsObserver {
     private static final float MEGA = 1024 * 1024;
 
     private Map<String, SequenceStatView> sequenceViewMap;
+    private Map<String, InboundEndpointStatView> inboundViewMap;
     private Map<String, EndpointStatView> endpointViewMap;
     private Map<String, EndpointOperationStatView> endpointOperationViewMap;
     private MemoryStatView memoryView;
@@ -79,6 +81,7 @@ public class EsbStatisticsConsumer implements MediationStatisticsObserver {
 
     public EsbStatisticsConsumer() {
         sequenceViewMap = new HashMap<String, SequenceStatView>();
+        inboundViewMap = new HashMap<String, InboundEndpointStatView>();
         endpointViewMap = new HashMap<String, EndpointStatView>();
         endpointOperationViewMap = new HashMap<String, EndpointOperationStatView>();
 
@@ -197,6 +200,20 @@ public class EsbStatisticsConsumer implements MediationStatisticsObserver {
             updateCommonView(view, updateRecord);
         }
 
+        if (type == ComponentType.INBOUND_ENDPOINT) {
+            InboundEndpointStatView view;
+            if (!inboundViewMap.containsKey(updateRecord.getResourceId())) {
+                view = new InboundEndpointStatView();
+                MBeanRegistrar.getInstance().registerMBean(view,
+                        INBOUND_MONITOR, (updateRecord.getResourceId()));
+                registeredMbeanIds.put(INBOUND_MONITOR, (updateRecord.getResourceId()));
+                inboundViewMap.put(updateRecord.getResourceId(), view);
+            } else {
+                view = inboundViewMap.get(updateRecord.getResourceId());
+            }
+            updateCommonView1(view, updateRecord);
+        }
+
         if (updateRecord.isInStatistic()) {
             if (type == ComponentType.ENDPOINT) {
                 // Handling total endpoint related stats
@@ -267,6 +284,9 @@ public class EsbStatisticsConsumer implements MediationStatisticsObserver {
         }
         view.setNumberOfErrorsInLastMin(updateFaultCount);
         view.setTransactionsInLastMin(updatedTotalCount);
+    }
+    private void updateCommonView1(InboundEndpointStatView view, StatisticsRecord update) {
+        view.setTransactionsInLastMin(view.getTransactionsIn() + update.getTotalCount());
     }
 
     private void updateEndpointView(EndpointStatView view, StatisticsRecord update) {

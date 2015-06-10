@@ -49,7 +49,8 @@
         var psStr = '<%=graphData.getProxyServiceData()%>';
         var epStr = '<%=graphData.getEndPointData()%>';
         var seqStr = '<%=graphData.getSequenceData()%>';
-        populateAllGraphs(serverStr, psStr, epStr, seqStr);
+        var inboundStr = '<%=graphData.getInboundData()%>';
+        populateAllGraphs(serverStr, psStr, epStr, seqStr,inboundStr);
     </script>
     <table width="100%">
         <tr>
@@ -154,6 +155,33 @@
                     </tr>
                 </table>
             </td>
+        </tr>
+        <tr height="10"/>
+        <tr>
+         <td width="50%">
+                                                        <table class="styledLeft" id="inboundTable" width="100%">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <a href="sequence_statistics_view.jsp"><fmt:message
+                                                                            key="inbound.statistics"/></a>
+                                                                </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tr>
+                                                                <td>
+                                                                    <div>
+                                                                        <% if (graphData.getSequenceData() == null || graphData.getSequenceData().trim().equals("")) { %>
+                                                                        <p><i><fmt:message key="no.inbound.data"/></i></p>
+                                                                        <% } else { %>
+                                                                        <div id="inboundGraph" style="width:500px;height:200px;"></div>
+                                                                        <% } %>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <td width="10">&nbsp;</td>
         </tr>
     </table>
     <script type="text/javascript">

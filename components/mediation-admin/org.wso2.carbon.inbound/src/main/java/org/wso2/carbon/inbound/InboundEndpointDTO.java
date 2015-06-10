@@ -34,6 +34,7 @@ public class InboundEndpointDTO {
     private String onErrorSeq;
     private ParameterDTO[]parameters;
     private String fileName;
+    private boolean enableStatistics;
 
     public InboundEndpointDTO(InboundEndpoint inboundEndpoint) {
         this.name = inboundEndpoint.getName();
@@ -125,5 +126,13 @@ public class InboundEndpointDTO {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public boolean isEnableStatistics() {
+        return enableStatistics;
+    }
+
+    public void setEnableStatistics(boolean enableStatistics) {
+        this.enableStatistics = enableStatistics;
     }
 }

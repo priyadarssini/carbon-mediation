@@ -29,6 +29,55 @@
 <script type="text/javascript" src="global-params.js"></script>
 <script type="text/javascript" src="inboundcommon.js"></script>
 
+<script type="text/javascript">
+function enableStat(endpointName) {
+    $.ajax({
+               type: 'POST',
+               url: 'ajaxprocessors/stat-ajaxprocessor.jsp',
+               data: 'endpointName=' + endpointName + '&action=enableStat',
+               success: function(msg) {
+                   var index = msg.toString().trim().indexOf('<div>');
+                   if (index != -1 && msg.toString().trim().indexOf('<div>Error:') == index) {
+                       CARBON.showErrorDialog(msg.toString().trim().substring(index + 17));
+                   } else {
+                       handleStatCallback('enableStat', endpointName);
+                   }
+               }
+           });
+}
+
+function disableStat(endpointName) {
+    $.ajax({
+               type: 'POST',
+               url: 'ajaxprocessors/stat-ajaxprocessor.jsp',
+               data: 'endpointName=' + endpointName + '&action=disableStat',
+               success: function(msg) {
+                   var index = msg.toString().trim().indexOf('<div>');
+                   if (index != -1 && msg.toString().trim().indexOf('<div>Error:') == index) {
+                       CARBON.showErrorDialog(msg.toString().trim().substring(index + 17));
+                   } else {
+                       handleStatCallback('disableStat', endpointName);
+                   }
+               }
+           });
+}
+
+function handleStatCallback(action, endpointName) {
+    var element;
+    if (action == 'enableStat') {
+        element = document.getElementById("disableStat" + endpointName);
+        element.style.display = "";
+        element = document.getElementById("enableStat" + endpointName);
+        element.style.display = "none";
+    } else {
+        element = document.getElementById("disableStat" + endpointName);
+        element.style.display = "none";
+        element = document.getElementById("enableStat" + endpointName);
+        element.style.display = "";
+    }
+}
+</script>
+
 <fmt:bundle basename="org.wso2.carbon.inbound.ui.i18n.Resources">
     <carbon:jsi18n
         resourceBundle="org.wso2.carbon.inbound.ui.i18n.JSResources"
@@ -69,6 +118,18 @@
                         <%=name%>
                     </td>
                     <td>
+                    <div id="disableStat<%= name%>">
+                                                                    <a href="#" onclick="disableStat('<%= name %>')"
+                                                                       class="icon-link"
+                                                                       style="background-image:url(../admin/images/static-icon.gif);"><fmt:message
+                                                                            key="disable.statistics"/></a>
+                                                                </div>
+                                                                <div id="enableStat<%= name%>" style="display:none;">
+                                                                    <a href="#" onclick="enableStat('<%= name %>')"
+                                                                       class="icon-link"
+                                                                       style="background-image:url(../admin/images/static-icon-disabled.gif);"><fmt:message
+                                                                            key="enable.statistics"/></a>
+                                                                </div>
                         <a href="javascript:editRecord('<%=name%>')" id="config_link"
                            class="edit-icon-link"><fmt:message key="inbound.edit"/></a>
                         <a href="javascript:deleteRecord('<%=name%>')"

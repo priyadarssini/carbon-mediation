@@ -143,6 +143,7 @@ public class StatisticsReporterThread extends Thread {
             }
         }
 
+        reportStatistics(systemViewStrategy.determineView(records, ComponentType.INBOUND_ENDPOINT));
         // report sequence statistics
         reportStatistics(systemViewStrategy.determineView(records, ComponentType.SEQUENCE));
 

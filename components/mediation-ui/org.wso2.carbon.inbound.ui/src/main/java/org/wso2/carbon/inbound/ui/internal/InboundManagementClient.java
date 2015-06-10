@@ -47,6 +47,16 @@ public class InboundManagementClient {
 
     private Properties prop = null;
 
+    public void enableStatistics(String name) throws Exception {
+       System.out.println("Enable Statistics........." + name);
+        stub.enableStatistics(name);
+    }
+
+    public void disableStatistics(String name) throws Exception {
+        System.out.println("Disable Statistics........." + name);
+        stub.disableStatistics(name);
+    }
+
     private InboundManagementClient(String cookie, String backendServerURL,
             ConfigurationContext configCtx) throws AxisFault {
 

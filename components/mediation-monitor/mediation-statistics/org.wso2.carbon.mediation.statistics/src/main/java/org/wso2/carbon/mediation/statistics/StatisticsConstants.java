@@ -6,6 +6,7 @@ public class StatisticsConstants {
     public static final int ENDPOINT_STATISTICS = 0;
     public static final int PROXY_SERVICE_STATISTICS = 1;
     public static final int SEQUENCE_STATISTICS = 2;
+    public static final int INBOUND_STATISTICS = 3;
 
     //Posible directions
     public static final int IN = 0;

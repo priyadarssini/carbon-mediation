@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
@@ -34,6 +35,8 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.SynapseException;
+import org.apache.synapse.aspects.AspectConfiguration;
 import org.apache.synapse.config.SynapseConfiguration;
 import org.apache.synapse.config.xml.SynapseXMLConfigurationFactory;
 import org.apache.synapse.inbound.InboundEndpoint;
@@ -47,12 +50,93 @@ public class CarbonInboundManagementService extends AbstractServiceBusAdmin {
 
     private static Log log = LogFactory.getLog(CarbonInboundManagementService.class);
 
+    public void enableStatistics(String endpointName) throws InboundManagementException {
+        final Lock lock = getLock();
+        try {
+            lock.lock();
+            assertNameNotEmpty(endpointName);
+            endpointName = endpointName.trim();
+            InboundEndpoint ep = getSynapseConfiguration().getInboundEndpoint(endpointName);
+System.out.println("***************************");
+            if (ep != null) {
+                if (ep.getAspectConfiguration() == null) {
+                    AspectConfiguration config = new AspectConfiguration(endpointName);
+                    config.enableStatistics();
+                    ep.configure(config);
+                } else {
+                    ep.getAspectConfiguration().enableStatistics();
+                }
+
+            } else {
+                log.error("Couldn't find the proxy service with name "
+                        + endpointName + " to enable statistics");
+            }
+System.out.println("***************************");
+System.out.println(ep.getAspectConfiguration().isStatisticsEnable());
+            if (log.isDebugEnabled()) {
+                log.debug("Statistics enabled on endpoint : " + endpointName);
+            }
+        } catch (SynapseException syne) {
+            handleFault("Error enabling statistics for the endpoint : " + endpointName, syne);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void disableStatistics(String endpointName) throws InboundManagementException {
+        final Lock lock = getLock();
+        try {
+            lock.lock();
+
+            InboundEndpoint ep = getSynapseConfiguration().getInboundEndpoint(endpointName);
+            System.out.println("####################################");
+            if (ep != null) {
+                if (ep.getAspectConfiguration() == null) {
+                    AspectConfiguration config = new AspectConfiguration(endpointName);
+                    config.disableStatistics();
+                    ep.configure(config);
+                } else {
+                    ep.getAspectConfiguration().disableStatistics();
+                }
+            } else {
+                log.error("Couldn't find the proxy service with name "
+                        + endpointName + " to disable statistics");
+            }
+            if(log.isDebugEnabled()) {
+                log.debug("Disabled statistics on proxy service : " + endpointName);
+            }
+            System.out.println("####################################");
+            System.out.println(ep.getAspectConfiguration().isStatisticsEnable());
+        } catch (Exception e) {
+            handleFault(log + endpointName, e);
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    private void assertNameNotEmpty(String endpointName) throws InboundManagementException {
+        if (endpointName == null || "".equals(endpointName.trim())) {
+            handleFault("Invalid name : Name is empty.", null);
+        }
+    }
+
+    private void handleFault(String message, Exception e) throws InboundManagementException {
+        if (e != null) {
+            log.error(message, e);
+            throw new InboundManagementException(e.getMessage(), e);
+        } else {
+            log.error(message);
+            throw new InboundManagementException(message);
+        }
+    }
+
     /**
      * Get all the inbound endpoins available.
-     * 
+     *
      * @return List<InboundEndpointDTO> (This contains all the inbound endpoints)
      * */
-    public InboundEndpointDTO[] getAllInboundEndpointNames() throws InboundManagementException {        
+    public InboundEndpointDTO[] getAllInboundEndpointNames() throws InboundManagementException {
         Collection<InboundEndpoint> inboundEndpoints = getSynapseConfiguration().getInboundEndpoints();
         InboundEndpointDTO[]lInboundEndpoints = new InboundEndpointDTO[inboundEndpoints.size()];
         int i = 0;
@@ -63,9 +147,9 @@ public class CarbonInboundManagementService extends AbstractServiceBusAdmin {
     }
 
     /**
-     * 
+     *
      * Get specific inbound ep by name
-     * 
+     *
      * @param endointName
      * @return
      * @throws InboundManagementException
@@ -79,9 +163,9 @@ public class CarbonInboundManagementService extends AbstractServiceBusAdmin {
     }
 
     /**
-     * 
+     *
      * Create inbound EP based on the given parameters
-     * 
+     *
      * @param name
      * @param sequence
      * @param onError
